@@ -37,11 +37,11 @@ def get_relatorio():
         dia_inicio = int(dia)
         dia_fim = int(dia) + 1
 
-    relatorio = []
     client = MongoClient(MONGODB_HOST, MONGODB_PORT)
     client.admin.authenticate('david', 'david')
     col = client[MONGODB_DB][MONGODB_COLLECTION]
 
+    relatorio = []
     try:
 
         start_date = datetime.datetime(2015, mes, dia_inicio, 0, 0, 1)
@@ -57,6 +57,7 @@ def get_relatorio():
     except ValueError as erro:
         return jsonify({'Erro': '{}'.format(erro)})
 
+    # A future javascript array
     for resultado in relatorio_diario:
         relatorio.append(resultado)
 
