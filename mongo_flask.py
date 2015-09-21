@@ -113,6 +113,5 @@ def home_page():
         possiveis_filtros=possiveis_filtros,
     )
 
-
 if __name__ == '__main__':
     app.run(host='vlo02737.corp.nova', port=80, debug=True)
