@@ -4,30 +4,32 @@ queue()
 
 function makeGraphs(error, alertasJson) {
 
-
+    //The entire JSON response (a Javascript array)
 	var alertas = alertasJson;
 
+    //In case the query has no results, let the user know
     if (alertas.length == 0){
+        alert(alertas.length + ' alertas encontrados');
+    }else{
         alert(alertas.length + ' alertas encontrados');
     }
 
-    //Convertendo a hora Mongo para hora Javascript
-    //Javascript é imbecil e tenta pensar por voce
-    //Por isso é necessário converter de UTC-3 para UTC
+    //Convert the time so Javascript doesn't try to autoconvert and mix timezones
 	alertas.forEach(function(d) {
 	    var hora =  new Date(d['horario']['$date']);
 	    hora.setTime( hora.getTime() + hora.getTimezoneOffset()*60*1000 );
 		d['horario'] = hora;
-		hora = null;
 	});
 
+    //This is the crossfilter object
 	var ndx = crossfilter(alertas);
 
-    //Dimensao que retorna a data do mes
+    //Dimension on the day of the month, used on a chart later
     var diaDim = ndx.dimension(function(d) {
         return d["horario"].getDate();
     });
 
+    //Dimension that returns the entire thing (used in a table later)
     var tudoDim = ndx.dimension(function(d) {
 	    return d;
 	});
@@ -105,7 +107,6 @@ function makeGraphs(error, alertasJson) {
 		.xAxisLabel(nome_mes)
 		.xAxis().ticks(maxDate);
 
-
     var tempoFormat = d3.time.format("%H:%M:%S");
     var dataFormat = d3.time.format("%d/%m/%Y");
 
@@ -115,7 +116,7 @@ function makeGraphs(error, alertasJson) {
 	    .group(function (d) {
             return dataFormat(d['horario']);
         })
-        .size(100)
+        .size(1000)
 	    .columns([
 	        {
 	           label:'Horario',
@@ -140,11 +141,5 @@ function makeGraphs(error, alertasJson) {
         .sortBy(function (d) {
             return d['horario'];
         })
-
 		dc.renderAll();
-
-
-
-
-
 };

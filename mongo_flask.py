@@ -17,6 +17,10 @@ MONGODB_COLLECTION = 'alerta_sem_event_console'
 
 @app.route('/relatorio/')
 def get_relatorio():
+    """
+
+    :return: a JSON object with either the alerts or the error message
+    """
     mes = request.args.get('mes')
     dia = request.args.get('dia')
     filtro = request.args.get('filtro')

@@ -7,23 +7,32 @@ from dateutil import parser
 
 
 def criar_log_local(sitescope):
+    """
+    Read the remote sitescope log files
+    Create a single log file with all alerts
+
+    :param sitescope: FQDN of the sitescope server
+    :return: None
+    """
     log_sis = []
     log_sis_old = []
 
+    caminho_log = r'\\' + sitescope + r'\logs\\'
+
     print('Reading ' + r'\\' + sitescope + r'\logs\alert.log')
     try:
-        with open(r'\\' + sitescope + r'\logs\alert.log', 'r', encoding='utf8') as arquivo:
+        with open(caminho_log + 'alert.log', 'r', encoding='utf8') as arquivo:
             log_sis = arquivo.readlines()
     except UnicodeDecodeError:
-        with open(r'\\' + sitescope + r'\logs\alert.log', 'r', encoding='latin-1') as arquivo:
+        with open(caminho_log + 'alert.log', 'r', encoding='latin-1') as arquivo:
             log_sis = arquivo.readlines()
 
     print('Reading ' + r'\\' + sitescope + r'\logs\alert.log.old')
     try:
-        with open(r'\\' + sitescope + r'\logs\alert.log.old', 'r', encoding='utf8') as arquivo:
+        with open(caminho_log + 'alert.log.old', 'r', encoding='utf8') as arquivo:
             log_sis_old = arquivo.readlines()
     except UnicodeDecodeError:
-        with open(r'\\' + sitescope + r'\logs\alert.log.old', 'r', encoding='latin-1') as arquivo:
+        with open(caminho_log + 'alert.log.old', 'r', encoding='latin-1') as arquivo:
             log_sis_old = arquivo.readlines()
     except FileNotFoundError:
         pass
@@ -35,6 +44,12 @@ def criar_log_local(sitescope):
 
 
 def converter_log_para_json(sitescope):
+    """
+    Read the new log file and create an array of alerts.
+
+    :param sitescope: FQDN of Sitescope server
+    :return: an array of dictionaries, each dictionary is an alert
+    """
     with open(r'logs_local\sitescope\\' + sitescope + '.log', 'r', encoding='utf8') as arquivo:
         alertas = []
         num_alertas = -1
@@ -45,15 +60,12 @@ def converter_log_para_json(sitescope):
 
             novo_alerta = re.match('(^[0-9][0-9]:[0-9][0-9]:[0-9][0-9] [0-9][0-9]/[0-9][0-9]/[0-9][0-9][0-9][0-9])',
                                    line)
-
             if novo_alerta:
                 num_alertas += 1
                 horario = parser.parse(novo_alerta.group(1))
                 alertas.append({'horario': horario})
 
                 alertas[num_alertas]['sitescope'] = sitescope
-                # if num_alertas % 1000 == 0:
-                #    print('{num_alertas} alertas encontrados'.format(num_alertas=num_alertas))
 
             elif (' alert-' in line or ' action-' in line) and ' alert-body' not in line:
                 line_split = line.split(':', 1)
@@ -61,6 +73,7 @@ def converter_log_para_json(sitescope):
                 valor = line_split[1].lstrip(' ')
                 alertas[num_alertas][metrica] = valor
 
+    print(alertas[0])
     return alertas
 
 
@@ -82,12 +95,17 @@ def deletar_event_console(alertas):
 
 
 def inserir_alertas(alertas):
+    """
+
+    :param alertas: list of dictionaries to insert
+    :return: None
+    """
     servidor = '127.0.0.1'
     database = 'sitescope'
     collection = 'alerta_sem_event_console'
 
     client = MongoClient(servidor, 27017)
-    client.admin.authenticate('david', 'david')
+    client.admin.authenticate('user', 'password')
 
     db = client[database]
     resultado = db[collection]
