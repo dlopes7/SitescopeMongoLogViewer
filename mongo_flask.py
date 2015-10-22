@@ -12,7 +12,7 @@ app = Flask(__name__)
 MONGODB_HOST = 'localhost'
 MONGODB_PORT = 27017
 MONGODB_DB = 'sitescope'
-MONGODB_COLLECTION = 'alerta_sem_event_console'
+MONGODB_COLLECTION = 'alerta_sem_event_console_v2'
 
 
 @app.route('/relatorio/')

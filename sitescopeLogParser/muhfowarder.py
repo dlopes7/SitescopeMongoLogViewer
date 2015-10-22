@@ -73,7 +73,6 @@ def converter_log_para_json(sitescope):
                 valor = line_split[1].lstrip(' ')
                 alertas[num_alertas][metrica] = valor
 
-    print(alertas[0])
     return alertas
 
 
@@ -95,17 +94,12 @@ def deletar_event_console(alertas):
 
 
 def inserir_alertas(alertas):
-    """
-
-    :param alertas: list of dictionaries to insert
-    :return: None
-    """
     servidor = '127.0.0.1'
     database = 'sitescope'
     collection = 'alerta_sem_event_console'
 
     client = MongoClient(servidor, 27017)
-    client.admin.authenticate('user', 'password')
+    client.admin.authenticate('david', 'david')
 
     db = client[database]
     resultado = db[collection]

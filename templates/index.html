@@ -1,7 +1,27 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <script>
+    <script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/crossfilter.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/d3.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/dc.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/queue.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/keen.min.js') }}"></script>
+
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="./static/assets/lib/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="./static/assets/css/keen-dashboards.css">
+    <link rel="stylesheet" href="./static/css/dc.css">
+    <link rel="stylesheet" href="./static/css/david.css">
+
+
+</head>
+<body class="application">
+
+<script>
+
+
 num_mes = {{num_mes}}
 nome_mes = "{{nome_mes}}"
 filtro = "{{filtro}}"
@@ -23,24 +43,15 @@ function mudar_mes(me){
 }
 
 
+function add_filtro(me){
+  var newInput = $("<input name='new_field' type='text'>");
+  $('#div_filtros').after(newInput);
+};
+
 
 
 
     </script>
-    <title>Dashboard</title>
-    <link rel="stylesheet" href="./static/css//bootstrap.min.css">
-    <link rel="stylesheet" href="./static/css/keen-dashboards.css">
-    <link rel="stylesheet" href="./static/css/dc.css">
-    <link rel="stylesheet" href="./static/css/david.css">
-
-
-</head>
-<body class="application">
-
-<script>
-
-
-</script>
 
 <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
     <div class="container-fluid">
@@ -50,69 +61,90 @@ function mudar_mes(me){
     </div>
 </div>
 
-<div class="container-fluid">
-    <div>
-        Mes:
-        <select id="drop_mes">
-            <option value="9">Setembro/2015</option>
-            <option value="8">Agosto/2015</option>
-        </select>
-    </div>
-
-    Filtros:
-    <select id="drop_campo">
-        {% for elemento in possiveis_filtros %}
-        <option value="{{ elemento }}">{{elemento}}</option>
-        {% endfor %}
+<div id="div_filtros">
+    Mes:
+    <select id="drop_mes">
+        <option value="10">Outubro/2015</option>
+        <option value="9">Setembro/2015</option>
+        <option value="8">Agosto/2015</option>
     </select>
-    Regex: <input type="text" name="drop_regex" id="drop_regex">
-    <input type="submit" value="Buscar" onclick="mudar_mes(this)">
-
 </div>
-<div class="row">
-    <div class="col-sm-6">
-        <div class="row">
-            <!-- Time Chart -->
-            <div class="col-sm-12">
-                <div class="chart-wrapper">
-                    <div class="chart-title">
-                        Alertas por dia {{mes}}
-                    </div>
-                    <div class="chart-stage">
-                        <div id="time-chart"></div>
-                    </div>
+
+Filtros:
+<select id="drop_campo">
+    {% for elemento in possiveis_filtros %}
+    <option value="{{ elemento }}">{{elemento}}</option>
+    {% endfor %}
+</select>
+Regex: <input type="text" name="drop_regex" id="drop_regex">
+<input type="submit" value="Buscar" onclick="mudar_mes(this)">
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-8">
+            <div class="chart-wrapper">
+                <div class="chart-title">
+                    Alertas por dia {{mes}}
+                </div>
+                <div class="chart-stage">
+                    <div id="time-chart"></div>
                 </div>
             </div>
-            <!-- Time Chart -->
+        </div>
+        <div class="col-sm-2">
+            <div class="chart-wrapper">
+                <div class="chart-title">
+                    Alertas selecionados
+                </div>
+                <div class="chart-stage">
+                    <div id="numero-alertas"></div>
+                </div>
+            </div>
+            <div class="chart-wrapper">
+                <div class="chart-title">
+                    Tipo de alerta
+                </div>
+                <div class="chart-stage">
+                    <div id="tipo-alertas"></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-2">
+            <div class="chart-wrapper">
+                <div class="chart-title">
+                    Chamados abertos
+                </div>
+                <div class="chart-stage">
+                    <div id="numero-chamados"></div>
+                </div>
+            </div>
+            <div class="chart-wrapper">
+                <div class="chart-title">
+                    Criticidade
+                </div>
+                <div class="chart-stage">
+                    <div id="criticidade"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="chart-wrapper">
+                <div class="chart-title">
+                    Tabela
+                </div>
+                <div class="chart-stage">
+                    <table class="table table-hover alerts-table">
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
 </div>
-<div class="row">
-    <div class="col-sm-6 col-md-4">
-        <div class="chart-wrapper">
-            <div class="chart-title">
-                Tabela
-            </div>
-            <div class="chart-stage">
-                <table class="table table-hover alerts-table">
-                </table>
-            </div>
-        </div>
-    </div>
-</div>
-
 <hr>
 <p class="small text-muted">Python carai</p>
 
-<script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
-<script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
-<script src="{{ url_for('static', filename='js/crossfilter.js') }}"></script>
-<script src="{{ url_for('static', filename='js/d3.js') }}"></script>
-<script src="{{ url_for('static', filename='js/dc.js') }}"></script>
-<script src="{{ url_for('static', filename='js/queue.js') }}"></script>
-
-<script src="{{ url_for('static', filename='js/keen.min.js') }}"></script>
 <script src="{{ url_for('static', filename='js/graphs.js') }}"></script>
-
 </body>
 </html>
