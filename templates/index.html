@@ -64,9 +64,12 @@ function add_filtro(me){
 <div id="div_filtros">
     Mes:
     <select id="drop_mes">
-        <option value="10">Outubro/2015</option>
-        <option value="9">Setembro/2015</option>
-        <option value="8">Agosto/2015</option>
+        {% for mes in meses_disponiveis %}
+        {% for key, value in mes.items() %}
+        <option value="{{ value }}">{{key}}</option>
+        {% endfor %}
+
+        {% endfor %}
     </select>
 </div>
 

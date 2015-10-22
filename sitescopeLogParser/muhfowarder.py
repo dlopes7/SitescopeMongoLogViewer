@@ -121,7 +121,7 @@ def inserir_alertas(alertas):
 def get_alerta(query):
     servidor = '127.0.0.1'
     database = 'sitescope'
-    collection = 'alerta_sem_event_console'
+    collection = 'alerta_sem_event_console_v2'
 
     client = MongoClient(servidor, 27017)
     client.admin.authenticate('david', 'david')
